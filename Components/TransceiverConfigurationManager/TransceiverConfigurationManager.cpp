@@ -28,20 +28,6 @@ namespace Components {
     this->pingOut_out(portNum, key);
   }
 
-  bool TransceiverConfigurationManager::getPipeMode_handler(FwIndexType portNum) {
-    // Stub: implement here.
-    return m_pipeModeEnabled;
-  }
-
-  void TransceiverConfigurationManager::setPipeMode_handler(
-      FwIndexType portNum, 
-      bool enable
-  ) {
-    // Stub: implement here.
-    // The I2C command to enable/disable pipe mode has been removed.
-    m_pipeModeEnabled = enable;
-  }
-
   void TransceiverConfigurationManager::configureSettings() {
     // Stub: implement here.
   }

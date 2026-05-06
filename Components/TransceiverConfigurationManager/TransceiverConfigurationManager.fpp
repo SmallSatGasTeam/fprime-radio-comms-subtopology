@@ -1,12 +1,6 @@
 module Components {
 
-    @ Custom port: returns current pipe mode state
-    port GetPipeMode() -> bool
-
-    @ Custom port: enables or disables pipe mode
-    port SetPipeMode(enable: bool)
-
-    @ Component that configures the UHF transceiver via I2C and manages pipe mode state.
+    @ Component that configures the UHF transceiver via I2C.
     active component TransceiverConfigurationManager {
 
         ##############################################################################
@@ -23,20 +17,10 @@ module Components {
         output port i2cWrite: Drv.I2c
 
         ##############################################################################
-        # Pipe Mode Coordination Ports
-        ##############################################################################
-
-        @ Returns current pipe mode state (true = enabled, false = disabled)
-        sync input port getPipeMode: Components.GetPipeMode
-
-        @ Enables or disables pipe mode via I2C
-        sync input port setPipeMode: Components.SetPipeMode
-
-        ##############################################################################
         # Commands
         ##############################################################################
 
-        @ Configure radio settings and enable pipe mode
+        @ Configure radio settings
         async command configureSettings() opcode 0x01
 
         ##############################################################################

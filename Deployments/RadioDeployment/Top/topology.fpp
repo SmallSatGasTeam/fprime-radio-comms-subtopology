@@ -152,10 +152,6 @@ module RadioDeployment {
       # TransceiverCommsManager -- Buffer Allocation
       transceiverCommsManager.allocate -> RadioProtocol.commsBufferManager.bufferGetCallee
       transceiverCommsManager.deallocate -> RadioProtocol.commsBufferManager.bufferSendIn
-
-      # Coordination -- Pipe Mode
-      transceiverCommsManager.getPipeMode -> transceiverConfigManager.getPipeMode
-      transceiverCommsManager.setPipeMode -> transceiverConfigManager.setPipeMode
     }
 
   }

@@ -39,16 +39,6 @@ module Components {
         async input port schedIn: Svc.Sched
 
         ##############################################################################
-        # Pipe Mode Coordination Ports
-        ##############################################################################
-
-        @ Query pipe mode state from ConfigurationManager
-        output port getPipeMode: Components.GetPipeMode
-
-        @ Request pipe mode change from ConfigurationManager
-        output port setPipeMode: Components.SetPipeMode
-
-        ##############################################################################
         # Commands
         ##############################################################################
 

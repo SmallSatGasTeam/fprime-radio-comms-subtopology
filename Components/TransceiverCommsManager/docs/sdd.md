@@ -1,6 +1,6 @@
 # Component::TransceiverCommsManager
 
-Active component serving as the downlink gateway and beacon state machine controller. Routes downlink data to the framing stack, manages beacon transmission timing across multiple power states, and coordinates with the radio configuration manager for pipe mode state.
+Active component serving as the downlink gateway and beacon state machine controller. Routes downlink data to the framing stack and manages beacon transmission timing across multiple power states.
 
 ## Usage Examples
 
@@ -27,8 +27,6 @@ Active component serving as the downlink gateway and beacon state machine contro
 | `bufferReturn` | `Fw.BufferSend` | async input | Returned buffers from comQueue after transmission |
 | `setBeaconStateIn` | `Components.SetBeaconState` | async input | Allows FlightLogic to change beacon state programmatically |
 | `schedIn` | `Svc.Sched` | async input | Rate group tick for beacon timer (e.g., 1 Hz) |
-| `getPipeMode` | `Components.GetPipeMode` | sync output | Query pipe mode state from ConfigurationManager |
-| `setPipeMode` | `Components.SetPipeMode` | sync output | Request pipe mode change from ConfigurationManager |
 | `allocate` | `Fw.BufferGet` | output | Buffer allocation for beacon/data buffers |
 | `deallocate` | `Fw.BufferSend` | output | Buffer deallocation |
 | `pingIn` | `Svc.Ping` | async input | Health ping input |

@@ -52,8 +52,6 @@ namespace TransceiverConfig {
         const char* writeRadioFreq;
         const char* writeBeaconTransmissionPeriod;
         const char* writePowerMode;
-        const char* writeSCWPipeOn;
-        const char* writePipePeriod;
 
         // READ commands
         const char* readRadioFreq;
@@ -63,7 +61,6 @@ namespace TransceiverConfig {
         const char* readBeaconTransmissionPeriod;
         const char* readInternalTempAscii;
         const char* readSCW;
-        const char* readPipePeriod;
         const char* readPowerMode;
         const char* readSourceCallsign;
         const char* readDestinationCallsign;

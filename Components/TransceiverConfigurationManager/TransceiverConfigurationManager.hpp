@@ -32,8 +32,7 @@ namespace Components {
 
       //! Handler implementation for command configureSettings
       //!
-      //! Executes the complete radio configuration sequence via I2C and enables
-      //! pipe mode to allow transparent UART-to-radio bridging. Reads configuration
+      //! Executes the complete radio configuration sequence via I2C. Reads configuration
       //! parameters and sends configuration commands to the transceiver.
       void configureSettings_cmdHandler(FwOpcodeType opCode,  //!< The opcode
                                        U32 cmdSeq             //!< The command sequence number
@@ -42,25 +41,6 @@ namespace Components {
       // ----------------------------------------------------------------------
       // Port handler implementations
       // ----------------------------------------------------------------------
-
-      //! Handler implementation for sync port getPipeMode
-      //!
-      //! Returns the current pipe mode state (enabled/disabled). This getter
-      //! allows other components to query whether the radio is in transparent
-      //! UART-to-radio bridging mode.
-      //!
-      //! \return true if pipe mode is enabled, false if disabled
-      bool getPipeMode_handler(FwIndexType portNum  //!< The port number
-      ) override;
-
-      //! Handler implementation for sync port setPipeMode
-      //!
-      //! Enables or disables pipe mode via I2C command. When enabled, the radio
-      //! operates in transparent mode where UART data is transmitted over the air
-      //! and data received is placed on UART.
-      void setPipeMode_handler(FwIndexType portNum,  //!< The port number
-                              bool enable             //!< true to enable, false to disable
-      ) override;
 
       //! Handler implementation for async port pingIn
       //!
@@ -78,7 +58,7 @@ namespace Components {
       //!
       //! Performs the full I2C initialization of the Radio transceiver
       //! including frequency setting, beacon transmission period configuration,
-      //! power mode configuration, and pipe mode enablement with timeout.
+      //! and power mode configuration.
       //! Sends a series of configuration commands via I2C.
       void configureSettings();
 
@@ -138,14 +118,6 @@ namespace Components {
       // Configuration
       //! Transceiver configuration (I2C address and configuration command strings)
       TransceiverConfig::Config m_config;
-
-      // Internal State
-      //! Current pipe mode state
-      //!
-      //! Tracks whether transparent UART-to-radio bridging is enabled.
-      //! true = pipe mode active (UART operates as direct radio link)
-      //! false = normal mode (explicit commands required per transmission)
-      bool m_pipeModeEnabled = false;
   };
 
 } // namespace Components

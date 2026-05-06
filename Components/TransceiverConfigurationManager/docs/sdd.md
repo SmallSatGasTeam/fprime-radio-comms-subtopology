@@ -1,16 +1,14 @@
 # Component::TransceiverConfigurationManager
 
-Active component responsible for I2C configuration of the radio transceiver and management of pipe mode state. Configures radio parameters (e.g., frequency, callsigns) and enables transparent UART-to-radio bridging in pipe mode.
+Active component responsible for I2C configuration of the radio transceiver. Configures radio parameters (e.g., frequency, callsigns) via I2C.
 
 ## Usage Examples
 
 ### Typical Usage
 1. On startup or when radio reconfiguration is needed, invoke the `configureSettings` command
 2. The component reads configuration parameters and sends I2C commands to the transceiver
-3. Once configured, pipe mode is enabled with a long timeout, making UART transparent
-4. The component remains idle until reconfiguration is requested or pipe mode expires
-5. Other components query pipe mode state via the `getPipeMode` sync port
-6. Health pings are accepted and responded to for system health monitoring
+3. The component remains idle until reconfiguration is requested
+4. Health pings are accepted and responded to for system health monitoring
 
 ## Port Descriptions
 
@@ -19,8 +17,6 @@ Active component responsible for I2C configuration of the radio transceiver and 
 | `i2cRead` | `Drv.I2c` | output | I2C read transactions to transceiver |
 | `i2cWrite` | `Drv.I2c` | output | I2C write transactions to transceiver |
 | `i2cReadWrite` | `Drv.I2cWriteRead` | output | I2C write-then-read transactions |
-| `getPipeMode` | sync input | input | Query current pipe mode state (getter) |
-| `setPipeMode` | sync input | input | Enable/disable pipe mode via I2C (setter) |
 | `allocate` | `Fw.BufferGet` | output | Buffer allocation for I2C transactions |
 | `deallocate` | `Fw.BufferSend` | output | Buffer deallocation |
 | `pingIn` | `Svc.Ping` | async input | Health ping input |
@@ -37,28 +33,24 @@ Active component responsible for I2C configuration of the radio transceiver and 
 
 ## Component States
 
-The component is passive and stateless with respect to mission logic. It maintains internal pipe mode state:
+The component is passive and stateless with respect to mission logic.
 
 | Name | Description |
 |---|---|
-| Idle | Waiting for reconfiguration or pipe mode coordination requests |
+| Idle | Waiting for reconfiguration requests |
 | Configuring | Executing I2C configuration sequence (transient) |
-| Pipe Mode Enabled | Transparent UART-to-radio bridging active |
-| Pipe Mode Disabled | Radio requires explicit commands for each transmission |
 
 ## Commands
 
 | Command | Arguments | Description |
 |---|---|---|
-| `configureSettings` | none | Execute full radio configuration sequence and enable pipe mode |
+| `configureSettings` | none | Execute full radio configuration sequence |
 
 ## Functions
 
 | Name | Description |
 |---|---|
 | `configureSettings_cmdHandler()` | Initiates the radio configuration sequence |
-| `getPipeMode_handler()` | Sync port handler returning current pipe mode state (bool) |
-| `setPipeMode_handler()` | Sync port handler to set pipe mode via I2C command |
 | `pingIn_handler()` | Health ping input, forwards to pingOut |
 | `sendI2cCmd()` | Allocates buffer, serializes I2C command, sends via i2cRead/i2cWrite/i2cReadWrite |
 | `checkI2cStatus()` | Validates I2C status, logs appropriate event |
@@ -98,7 +90,6 @@ The component is passive and stateless with respect to mission logic. It maintai
 
 | Name | Description | Status |
 |---|---|---|
-| `testGetPipeModeInitiallyFalse` | Verify getPipeMode sync port returns false on initialization | ✓ PASS |
 | `testPingPassthrough` | Verify pingIn forwarded correctly to pingOut | ✓ PASS |
 
 ## Requirements
@@ -107,7 +98,6 @@ The component is passive and stateless with respect to mission logic. It maintai
 |---|---|---|
 | CFG-1 | Configure transceiver frequency via I2C | Covered by `configureSettings` command implementation |
 | CFG-2 | Configure transceiver callsigns via I2C | Covered by `configureSettings` command implementation |
-| CFG-3 | Enable pipe mode for transparent UART bridging | Covered by `setPipeMode` handler |
 | CFG-4 | Report I2C transaction status via events | Covered by event logging in `checkI2cStatus` |
 | CFG-5 | Health ping support | Covered by `pingIn_handler` test |
 
