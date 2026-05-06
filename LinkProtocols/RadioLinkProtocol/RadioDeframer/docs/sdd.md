@@ -11,7 +11,7 @@ The deframing logic itself is intentionally a stub in this open-source scaffoldi
 A typical implementation will:
 1. Validate the radio's frame check (e.g., CRC) using values from `TransceiverConfig::RadioFrameConfig`.
 2. Strip the radio framing to expose the link-layer payload.
-3. Optionally try one or more link-layer protocols (e.g., AX.25) via their `stripFrame()` helpers in this repo's other `LinkProtocols/` modules. Each link-layer module is responsible for detecting and stripping its own framing; the deframer only acts on the boolean result.
+3. Optionally delegate to one or more link-layer protocol modules via their `stripFrame()` helpers. Each link-layer module is responsible for detecting and stripping its own framing; the deframer only acts on the boolean result.
 4. Update the `FrameContext` with the identified APID and the total stripped offset so the buffer pointer can be restored on the return path.
 5. Forward the inner F' payload to `Svc::FprimeRouter`.
 
