@@ -1,0 +1,24 @@
+# Build artifacts
+build-fprime-automatic-native/
+build-fprime-automatic-native-ut/
+build-artifacts/
+
+# Populated transceiver config — holds your radio's parameters.
+# Copy keys_template/TransceiverConfig.hpp.example, rename, and fill in values locally.
+keys_template/TransceiverConfig.hpp
+
+# Python virtual environment
+fprime-venv/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Planning
+docs/superpowers/plans/2026-03-31-ip-abstraction.md
+
+# Generated coverage reports
+**/coverage/

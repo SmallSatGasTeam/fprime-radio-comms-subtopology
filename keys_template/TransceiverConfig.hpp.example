@@ -1,0 +1,110 @@
+// ======================================================================
+// \title  TransceiverConfig.hpp
+// \brief  Configuration template for the radio transceiver.
+//
+// HOW TO USE:
+//   1. Copy this file to a location outside the public repo (e.g., a
+//      private repo or local directory).
+//   2. Rename the copy to TransceiverConfig.hpp.
+//   3. Fill in every value using your radio's datasheet.
+//   4. Point your CMake include path at the directory containing the
+//      populated file (see keys_template/README_IP_PROTECTION.md).
+//
+// WARNING: Never commit the populated TransceiverConfig.hpp.
+//          The .gitignore already excludes keys_template/TransceiverConfig.hpp.
+// ======================================================================
+
+#ifndef TRANSCEIVER_CONFIG_HPP
+#define TRANSCEIVER_CONFIG_HPP
+
+#include <Fw/Types/BasicTypes.hpp>
+
+namespace TransceiverConfig {
+
+    // -----------------------------------------------------------------------
+    // Radio Frame Protocol Configuration
+    // -----------------------------------------------------------------------
+    struct RadioFrameConfig {
+        U8  preambleByte;
+        U8  preambleLen;
+        U8  syncWord;
+        U8  lengthFieldLen;
+        // Number of CRC bytes appended to each frame (e.g., 2 for CRC-16).
+        U8  crcLen;
+        // CRC-16 algorithm parameters. The standard CRC-16-CCITT values are
+        // poly=0x1021 and init=0xFFFF, but these fields allow you to configure
+        // a different variant if your radio uses one.
+        U16 crcPoly;
+        U16 crcInit;
+    };
+
+    // -----------------------------------------------------------------------
+    // AX.25 Link Layer Configuration
+    // -----------------------------------------------------------------------
+    struct AX25Config {
+        // 6-character callsign, space-padded, NOT left-shifted.
+        // AX25Framing.cpp will apply the << 1 shift internally.
+        U8  destCallsign[6];
+        // Destination SSID byte. The AX.25 end-of-address LSB is forced to 0
+        // by AX25Framing::writeFrame — you do not need to set it.
+        U8  destSsid;
+
+        U8  srcCallsign[6];
+        // Source SSID byte. The AX.25 end-of-address LSB is forced to 1
+        // by AX25Framing::writeFrame — you do not need to set it.
+        U8  srcSsid;
+    };
+
+    // -----------------------------------------------------------------------
+    // Transceiver I2C & Command Configuration
+    // -----------------------------------------------------------------------
+    struct I2CConfig {
+        U8 address;
+
+        // All const char* fields MUST point to string literals or statically
+        // allocated buffers that outlive the Config object. Do NOT initialize
+        // from local buffers or computed strings.
+
+        // WRITE commands
+        const char* writeRadioFreq;
+        const char* writeBeaconTransmissionPeriod;
+        const char* writePowerMode;
+        const char* writeSCWPipeOn;
+        const char* writePipePeriod;
+
+        // READ commands
+        const char* readRadioFreq;
+        const char* readUptime;
+        const char* readTransmittedPackets;
+        const char* readReceivedPackets;
+        const char* readBeaconTransmissionPeriod;
+        const char* readInternalTempAscii;
+        const char* readSCW;
+        const char* readPipePeriod;
+        const char* readPowerMode;
+        const char* readSourceCallsign;
+        const char* readDestinationCallsign;
+    };
+
+    // -----------------------------------------------------------------------
+    // Beacon Payload Configuration
+    // -----------------------------------------------------------------------
+    struct BeaconConfig {
+        // MUST point to a string literal or statically allocated buffer that
+        // outlives the Config object.
+        const char* beaconPayload;
+    };
+
+    // -----------------------------------------------------------------------
+    // Top-Level Config
+    // -----------------------------------------------------------------------
+    struct Config {
+        RadioFrameConfig radio;
+        AX25Config       ax25;
+        I2CConfig        i2c;
+        BeaconConfig     beacon;
+    };
+
+} // namespace TransceiverConfig
+
+#endif // TRANSCEIVER_CONFIG_HPP
