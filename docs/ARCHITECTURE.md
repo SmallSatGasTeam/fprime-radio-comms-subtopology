@@ -15,12 +15,11 @@ Open_Source_FPrime_Radio_Communications/
 │   └── TransceiverConfigurationManager/ # Manages transceiver configuration via I2C
 │
 ├── LinkProtocols/
-│   ├── RadioLinkProtocol/          # The F' framing/deframing implementation
-│   │   ├── RadioFramer/           # Wraps packets in radio/link headers (Stubbed)
-│   │   ├── RadioDeframer/         # Strips headers from incoming frames (Stubbed)
-│   │   ├── RadioFrameDetector/    # Identifies frame boundaries in stream (Stubbed)
-│   │   └── RadioProtocol/         # FPP Subtopology connecting the stack
-│   └── AX25/                           # AX.25 Link Layer implementation (Stubbed)
+│   └── RadioLinkProtocol/          # The F' framing/deframing implementation
+│       ├── RadioFramer/            # Wraps packets in radio/link headers (Stubbed)
+│       ├── RadioDeframer/          # Strips headers from incoming frames (Stubbed)
+│       ├── RadioFrameDetector/     # Identifies frame boundaries in stream (Stubbed)
+│       └── RadioProtocol/          # FPP Subtopology connecting the stack
 │
 ├── Deployments/
 │   └── RadioDeployment/       # Example deployment using the comms stack

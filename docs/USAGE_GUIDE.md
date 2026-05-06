@@ -49,9 +49,6 @@ Located at `LinkProtocols/RadioLinkProtocol/RadioDeframer/RadioDeframer.cpp`. Im
 ### 3. `RadioFrameDetector.cpp`
 Located at `LinkProtocols/RadioLinkProtocol/RadioFrameDetector/RadioFrameDetector.cpp`. Replace the pass-through `detect()` with your sync-word / length-field scanning logic.
 
-### 4. `AX25Framing.cpp` (if using AX.25)
-Located at `LinkProtocols/AX25/AX25Framing.cpp`. Implement `writeFrame` and `stripFrame` for standard AX.25 UI-frame encapsulation.
-
 ---
 
 ## Step 4: Import the Subtopology

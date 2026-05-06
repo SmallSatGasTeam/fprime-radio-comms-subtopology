@@ -13,7 +13,6 @@ This project ships only the F' structural scaffolding for a radio communication 
 
 The framing-related bodies are intentional pass-throughs:
 - Framing / deframing (preamble, sync word, length field handling).
-- Link-layer encapsulation (AX.25 helpers).
 - Frame check / CRC computation.
 
 ### Injection via `keys_template/`

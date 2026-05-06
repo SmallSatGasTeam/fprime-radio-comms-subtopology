@@ -37,8 +37,4 @@ This module is intentionally free of radio-specific values. Hardware-specific co
 | `radio.crcInit` | CRC-16 initial value (CRC-16-CCITT = `0xFFFF`) |
 | `i2c.address` | I2C 7-bit slave address |
 | `i2c.WRITE_*` / `i2c.READ_*` | Configuration command strings from the radio's datasheet |
-| `ax25.srcCallsign` | Your licensed 6-character amateur/satellite callsign |
-| `ax25.destCallsign` | Destination callsign |
-| `ax25.destSsid` | Destination SSID byte (per AX.25 spec) |
-| `ax25.srcSsid` | Source SSID byte |
 | `beacon.beaconPayload` | ASCII string broadcast as the periodic beacon |

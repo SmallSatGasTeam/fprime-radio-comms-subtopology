@@ -11,7 +11,6 @@
 #include "Svc/FramingProtocol/DeframingProtocol.hpp"
 #include "keys_template/TransceiverConfig.hpp"
 #include "LinkProtocols/RadioLinkProtocol/CRC16.hpp"
-#include "LinkProtocols/AX25/AX25Framing.hpp"
 
 
 namespace RadioLinkProtocol {

@@ -21,5 +21,4 @@ register_fprime_library(
         "${CMAKE_CURRENT_LIST_DIR}/RadioFramer.cpp"
     DEPENDS
         LinkProtocols_RadioLinkProtocol
-        LinkProtocols_AX25
 )

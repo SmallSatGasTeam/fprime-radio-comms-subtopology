@@ -9,7 +9,6 @@
 
 #include "LinkProtocols/RadioLinkProtocol/RadioFramer/RadioFramerComponentAc.hpp"
 #include "LinkProtocols/RadioLinkProtocol/RadioFrameDetector/RadioFrameDetector.hpp"
-#include "LinkProtocols/AX25/AX25Framing.hpp"
 #include "keys_template/TransceiverConfig.hpp"
 
 namespace RadioLinkProtocol {

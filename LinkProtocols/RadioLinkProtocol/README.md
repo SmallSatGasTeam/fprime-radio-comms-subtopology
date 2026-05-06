@@ -7,7 +7,6 @@ The framing logic itself is intentionally a stub — operators provide their own
 - `RadioFramer`
 - `RadioDeframer`
 - `RadioFrameDetector`
-- `AX25` (if AX.25 link-layer is desired)
 
 The repository is useful as a reference for:
 - How to structure a framing/deframing stack in F'.
@@ -20,7 +19,6 @@ The repository is useful as a reference for:
 - `RadioDeframer/` — F' component for stripping headers and routing packets to the F' system.
 - `RadioFrameDetector/` — Implementation of `Svc::FrameDetector` for identifying frame boundaries in a byte stream.
 - `RadioProtocol/` — Subtopology definition connecting all framing components.
-- `AX25/` — Stubbed AX.25 UI-frame framing helpers.
 
 ## Helpful resources
 

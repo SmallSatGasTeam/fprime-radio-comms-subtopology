@@ -39,23 +39,6 @@ namespace TransceiverConfig {
     };
 
     // -----------------------------------------------------------------------
-    // AX.25 Link Layer Configuration
-    // -----------------------------------------------------------------------
-    struct AX25Config {
-        // 6-character callsign, space-padded, NOT left-shifted.
-        // AX25Framing.cpp will apply the << 1 shift internally.
-        U8  destCallsign[6];
-        // Destination SSID byte. The AX.25 end-of-address LSB is forced to 0
-        // by AX25Framing::writeFrame — you do not need to set it.
-        U8  destSsid;
-
-        U8  srcCallsign[6];
-        // Source SSID byte. The AX.25 end-of-address LSB is forced to 1
-        // by AX25Framing::writeFrame — you do not need to set it.
-        U8  srcSsid;
-    };
-
-    // -----------------------------------------------------------------------
     // Transceiver I2C & Command Configuration
     // -----------------------------------------------------------------------
     struct I2CConfig {
@@ -100,7 +83,6 @@ namespace TransceiverConfig {
     // -----------------------------------------------------------------------
     struct Config {
         RadioFrameConfig radio;
-        AX25Config       ax25;
         I2CConfig        i2c;
         BeaconConfig     beacon;
     };

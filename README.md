@@ -31,7 +31,7 @@ The framing logic itself is intentionally a stub — see [docs/USAGE_GUIDE.md](d
 ## Repository Structure
 
 - `Components/` — high-level management components (beacon management, I2C configuration).
-- `LinkProtocols/` — framer / deframer / frame-detector scaffolding and AX.25 link-layer module.
+- `LinkProtocols/` — framer / deframer / frame-detector scaffolding.
 - `Deployments/` — example F' deployment demonstrating stack integration.
 - `keys_template/` — configuration templates for the injection layer.
 
