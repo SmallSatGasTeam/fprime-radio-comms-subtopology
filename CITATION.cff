@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Radio Communication Subtopology for F Prime"
+abstract: >-
+  An open-source F Prime (F') structural scaffolding that wires a custom radio
+  link protocol — framer, deframer, and frame detector — into the standard F'
+  communications services, with beacon/I2C transceiver management components and
+  a configuration injection layer.
+type: software
+authors:
+  - given-names: Boston
+    family-names: Larson
+    affiliation: "Utah State University Get Away Special Student Satellite Team"
+version: "1.0.0"
+date-released: "2026-06-05"
+doi: "10.5281/zenodo.20563600"
+license: MIT
+repository-code: "https://github.com/SmallSatGasTeam/fprime-radio-comms-subtopology"
+url: "https://github.com/SmallSatGasTeam/fprime-radio-comms-subtopology"
+keywords:
+  - fprime
+  - f-prime
+  - flight-software
+  - cubesat
+  - smallsat
+  - radio-communications
+  - subtopology
