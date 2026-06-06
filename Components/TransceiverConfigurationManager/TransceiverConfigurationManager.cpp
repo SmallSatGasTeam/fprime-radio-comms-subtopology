@@ -11,10 +11,6 @@ namespace Components {
 
   TransceiverConfigurationManager::~TransceiverConfigurationManager() {}
 
-  void TransceiverConfigurationManager::setup(const TransceiverConfig::Config& config) {
-    m_config = config;
-  }
-
   void TransceiverConfigurationManager::configureSettings_cmdHandler(
       FwOpcodeType opCode,
       U32 cmdSeq

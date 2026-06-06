@@ -2,7 +2,6 @@
 #define Components_TransceiverCommsManager_HPP
 
 #include "Components/TransceiverCommsManager/TransceiverCommsManagerComponentAc.hpp"
-#include "keys_template/TransceiverConfig.hpp"
 
 namespace Components {
 
@@ -20,10 +19,6 @@ namespace Components {
 
       //! Destroy TransceiverCommsManager object
       ~TransceiverCommsManager();
-
-      //! Setup the component with configuration
-      //! \param config Fully populated TransceiverConfig::Config
-      void setup(const TransceiverConfig::Config& config);
 
     private:
 
@@ -115,9 +110,6 @@ namespace Components {
       //! \param buffer The buffer to forward to the framing stack
       void forwardToFramingStack(Fw::Buffer& buffer  //!< The buffer to forward
       );
-
-      //! Transceiver configuration
-      TransceiverConfig::Config m_config;
 
       //! Telemetry counter for total packets sent to the framing stack
       U32 m_packetsSent = 0;

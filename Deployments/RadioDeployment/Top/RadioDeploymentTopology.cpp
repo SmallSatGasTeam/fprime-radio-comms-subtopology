@@ -1,28 +1,21 @@
 // ======================================================================
-// \title  TransceiverDeployment2Topology.cpp
+// \title  RadioDeploymentTopology.cpp
 // \brief cpp file containing the topology instantiation code
 //
 // ======================================================================
 // Provides access to autocoded functions
 #include <Deployments/RadioDeployment/Top/RadioDeploymentTopologyAc.hpp>
 // Note: Uncomment when using Svc:TlmPacketizer
-//#include <TransceiverDeployment2/Top/TransceiverDeployment2PacketsAc.hpp>
+//#include <RadioDeployment/Top/RadioDeploymentPacketsAc.hpp>
 
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
-
-// #include <Svc/FramingProtocol/RadioProtocol.hpp> // using our own protocol!!
 
 // Allows easy reference to objects in FPP/autocoder required namespaces
 using namespace RadioDeployment;
 
 // Instantiate a malloc allocator for cmdSeq buffer allocation
 Fw::MallocAllocator mallocator;
-
-// Instantiate the radio config in the deployment namespace to match subtopology expectations
-namespace RadioDeployment {
-    TransceiverConfig::Config TRANSCEIVER_CONFIG;
-}
 
 // The reference topology divides the incoming clock signal (1Hz) into sub-signals: 1Hz, 1/2Hz, and 1/4Hz with 0 offset
 Svc::RateGroupDriver::DividerSet rateGroupDivisorsSet{{{1, 0}, {2, 0}, {4, 0}}};
@@ -45,11 +38,6 @@ enum TopologyConstants {
  * desired, but is extracted here for clarity.
  */
 void configureTopology() {
-    // Setup transceiver managers.
-    // Note: Framing stack components (Framer, Deframer, Detector) are setup in RadioProtocol.fpp
-    transceiverConfigManager.setup(TRANSCEIVER_CONFIG);
-    transceiverCommsManager.setup(TRANSCEIVER_CONFIG);
-
     // Rate group driver needs a divisor list
     rateGroupDriver.configure(rateGroupDivisorsSet);
 
@@ -62,7 +50,7 @@ void configureTopology() {
     cmdSeq.allocateBuffer(0, mallocator, 5 * 1024);
 }
 
-// Public functions for use in main program are namespaced with deployment name TransceiverDeployment2
+// Public functions for use in main program are namespaced with deployment name RadioDeployment
 namespace RadioDeployment {
 void setupTopology(const TopologyState& state) {
     // Autocoded initialization. Function provided by autocoder.
@@ -140,4 +128,4 @@ void teardownTopology(const TopologyState& state) {
 
     tearDownComponents(state);
 }
-};  // namespace TransceiverDeployment2
+};  // namespace RadioDeployment

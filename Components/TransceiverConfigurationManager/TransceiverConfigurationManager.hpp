@@ -2,7 +2,6 @@
 #define Components_TransceiverConfigurationManager_HPP
 
 #include "Components/TransceiverConfigurationManager/TransceiverConfigurationManagerComponentAc.hpp"
-#include "keys_template/TransceiverConfig.hpp"
 
 namespace Components {
 
@@ -20,9 +19,6 @@ namespace Components {
 
       //! Destroy TransceiverConfigurationManager object
       ~TransceiverConfigurationManager();
-
-      //! Setup the component with configuration
-      void setup(const TransceiverConfig::Config& config);
 
     private:
 
@@ -115,9 +111,6 @@ namespace Components {
       Response parseBuffer(Fw::Buffer readBuffer  //!< The response buffer to parse
       );
 
-      // Configuration
-      //! Transceiver configuration (I2C address and configuration command strings)
-      TransceiverConfig::Config m_config;
   };
 
 } // namespace Components

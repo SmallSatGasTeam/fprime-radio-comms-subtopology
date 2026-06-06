@@ -3,10 +3,6 @@ build-fprime-automatic-native/
 build-fprime-automatic-native-ut/
 build-artifacts/
 
-# Populated transceiver config — holds your radio's parameters.
-# Copy keys_template/TransceiverConfig.hpp.example, rename, and fill in values locally.
-keys_template/TransceiverConfig.hpp
-
 # Python virtual environment
 fprime-venv/
 

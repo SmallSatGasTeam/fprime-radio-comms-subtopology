@@ -10,10 +10,6 @@ namespace Components {
 
   TransceiverCommsManager::~TransceiverCommsManager() {}
 
-  void TransceiverCommsManager::setup(const TransceiverConfig::Config& config) {
-    m_config = config;
-  }
-
   // Command Handlers
 
   void TransceiverCommsManager::sendData_cmdHandler(

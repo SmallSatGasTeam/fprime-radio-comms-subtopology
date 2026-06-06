@@ -43,14 +43,9 @@ module RadioProtocol {
     instance FrameAccumulator: Svc.FrameAccumulator base id 0x10007000 \ 
     {
         phase Fpp.ToCpp.Phases.configObjects """
-        // TRANSCEIVER_CONFIG must be defined in your private deployment's
-        // TransceiverConfigInstance.cpp (see keys_template/README_IP_PROTECTION.md).
-        extern const TransceiverConfig::Config TRANSCEIVER_CONFIG;
         RadioLinkProtocol::RadioFrameDetector frameDetector;
         """
         phase Fpp.ToCpp.Phases.configComponents """
-        extern const TransceiverConfig::Config TRANSCEIVER_CONFIG;
-        ConfigObjects::RadioProtocol_FrameAccumulator::frameDetector.setup(TRANSCEIVER_CONFIG.radio);
         RadioProtocol::FrameAccumulator.configure(
             ConfigObjects::RadioProtocol_FrameAccumulator::frameDetector,
             1,
@@ -83,21 +78,9 @@ module RadioProtocol {
 
     instance fprimeRouter: Svc.FprimeRouter base id 0x10009000
 
-    instance RadioFramer: RadioLinkProtocol.RadioFramer base id 0x4100 \
-    {
-        phase Fpp.ToCpp.Phases.configComponents """
-        extern const TransceiverConfig::Config TRANSCEIVER_CONFIG;
-        RadioProtocol::RadioFramer.setup(TRANSCEIVER_CONFIG);
-        """
-    }
+    instance RadioFramer: RadioLinkProtocol.RadioFramer base id 0x4100
 
-    instance RadioDeframer: RadioLinkProtocol.RadioDeframer base id 0x4900 \
-    {
-        phase Fpp.ToCpp.Phases.configComponents """
-        extern const TransceiverConfig::Config TRANSCEIVER_CONFIG;
-        RadioProtocol::RadioDeframer.setup(TRANSCEIVER_CONFIG);
-        """
-    }    
+    instance RadioDeframer: RadioLinkProtocol.RadioDeframer base id 0x4900
 
     instance comStub: Svc.ComStub base id 0x1000E000
 
@@ -139,7 +122,7 @@ module RadioProtocol {
             #   sending data over UART.
             RadioFramer.dataOut   ->  comStub.dataIn
 
-            # comStub.dataReturnOut -> endursatFramer.dataReturnIn :
+            # comStub.dataReturnOut -> RadioFramer.dataReturnIn :
             #   We send data to comStub in buffers, so this port returns ownership
             #   of the buffer that we sent in RadioProtoco.RadioFramer.dataOut
             comStub.dataReturnOut   ->  RadioFramer.dataReturnIn
