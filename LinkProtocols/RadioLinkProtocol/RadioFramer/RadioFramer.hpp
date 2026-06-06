@@ -8,8 +8,6 @@
 #define RadioLinkProtocol_RadioFramer_HPP
 
 #include "LinkProtocols/RadioLinkProtocol/RadioFramer/RadioFramerComponentAc.hpp"
-#include "LinkProtocols/RadioLinkProtocol/RadioFrameDetector/RadioFrameDetector.hpp"
-#include "keys_template/TransceiverConfig.hpp"
 
 namespace RadioLinkProtocol {
 
@@ -20,14 +18,9 @@ public:
   // Component construction and destruction
   // ----------------------------------------------------------------------
 
-  //! Construct RadioFramer with injected configuration.
-  //! The config is copied by value.
+  //! Construct RadioFramer object
   //! \param compName  Component name
   RadioFramer(const char* const compName);
-
-  //! Setup the framer's config values
-  //! \param config    Fully populated TransceiverConfig::Config
-  void setup(const TransceiverConfig::Config& config);
 
   //! Destroy RadioFramer object
   ~RadioFramer();
@@ -60,8 +53,6 @@ private:
                             const ComCfg::FrameContext &context) override;
 
   void frameData(FwIndexType portNum, const U8* const data, const U32 size, const ComCfg::FrameContext &context);
-
-  TransceiverConfig::Config m_config;
 
 };
 

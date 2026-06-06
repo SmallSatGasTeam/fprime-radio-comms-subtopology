@@ -7,20 +7,11 @@
 
 namespace RadioLinkProtocol {
 
-    U16 crc16(const U8* data, U32 size, const TransceiverConfig::RadioFrameConfig& cfg) {
-        // Stub: implement CRC per your radio's datasheet.
-        return 0;
-    }
-
     RadioFrameDetector::RadioFrameDetector()
         : Svc::FrameDetector() {
     }
 
     RadioFrameDetector::~RadioFrameDetector() {}
-
-    void RadioFrameDetector::setup(const TransceiverConfig::RadioFrameConfig& config) {
-        m_config = config;
-    }
 
     RadioFrameDetector::Status RadioFrameDetector::detect(
         const Types::CircularBuffer& ring,

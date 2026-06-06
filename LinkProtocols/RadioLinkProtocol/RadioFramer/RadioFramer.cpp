@@ -5,6 +5,7 @@
 // ======================================================================
 
 #include "LinkProtocols/RadioLinkProtocol/RadioFramer/RadioFramer.hpp"
+#include "Fw/Types/Assert.hpp"
 
 namespace RadioLinkProtocol {
 
@@ -14,10 +15,6 @@ namespace RadioLinkProtocol {
 
 RadioFramer::RadioFramer(const char* const compName)
     : RadioFramerComponentBase(compName) {}
-
-void RadioFramer::setup(const TransceiverConfig::Config& config) {
-  m_config = config;
-}
 
 RadioFramer::~RadioFramer() {}
 
@@ -62,6 +59,12 @@ void RadioFramer::frameData(FwIndexType portNum, const U8* const data, const U32
     FW_ASSERT(data != nullptr);
 
     // Stub: pass-through. Implement your licensed framing here.
+    //
+    // A real framer produces a larger frame (preamble + sync word + length +
+    // payload + CRC), so it allocates a fresh buffer sized for the full frame and
+    // writes each field through the buffer's serializer. Using the serializer
+    // (rather than a raw memcpy) bounds-checks every write against the buffer's
+    // capacity. This stub just copies the payload through unchanged.
     const U32 total_len = size;
 
     Fw::Buffer buffer = this->bufferAllocate_out(0, total_len);
@@ -72,9 +75,13 @@ void RadioFramer::frameData(FwIndexType portNum, const U8* const data, const U32
         return;
     }
 
-    memcpy(buffer.getData(), data, size);
+    Fw::ExternalSerializeBufferWithMemberCopy& serializer = buffer.getSerializer();
+    serializer.resetSer();
+    const Fw::SerializeStatus status =
+        serializer.serializeFrom(data, static_cast<FwSizeType>(size), Fw::Serialization::OMIT_LENGTH);
+    FW_ASSERT(status == Fw::FW_SERIALIZE_OK, static_cast<FwAssertArgType>(status));
+    buffer.setSize(static_cast<U32>(serializer.getSize()));
 
-    buffer.setSize(total_len);
     this->dataOut_out(portNum, buffer, context);
 }
 

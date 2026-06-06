@@ -14,10 +14,6 @@ namespace RadioLinkProtocol {
 RadioDeframer ::RadioDeframer(const char* const compName)
     : RadioDeframerComponentBase(compName) {}
 
-void RadioDeframer::setup(const TransceiverConfig::Config& config) {
-    m_config = config;
-}
-
 RadioDeframer ::~RadioDeframer() {}
 
 // ----------------------------------------------------------------------
@@ -39,15 +35,6 @@ void RadioDeframer ::dataReturnIn_handler(
     const ComCfg::FrameContext &context
 ) {
     this->dataReturnOut_out(portNum, data, context);
-}
-
-// ---------------------------------------
-// Helper Functions
-// ---------------------------------------
-
-bool RadioDeframer::validateFrame(Fw::Buffer &dataBuffer, U32 size) {
-    // Stub: implement your licensed validation here.
-    return true;
 }
 
 } // namespace RadioLinkProtocol
