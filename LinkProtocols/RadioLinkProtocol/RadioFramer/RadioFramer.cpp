@@ -75,7 +75,7 @@ void RadioFramer::frameData(FwIndexType portNum, const U8* const data, const U32
         return;
     }
 
-    Fw::ExternalSerializeBufferWithMemberCopy& serializer = buffer.getSerializer();
+    Fw::ExternalSerializeBufferWithMemberCopy serializer = buffer.getSerializer();
     serializer.resetSer();
     const Fw::SerializeStatus status =
         serializer.serializeFrom(data, static_cast<FwSizeType>(size), Fw::Serialization::OMIT_LENGTH);
@@ -83,6 +83,5 @@ void RadioFramer::frameData(FwIndexType portNum, const U8* const data, const U32
     buffer.setSize(static_cast<U32>(serializer.getSize()));
 
     this->dataOut_out(portNum, buffer, context);
-}
-
+  }
 } // namespace RadioLinkProtocol
