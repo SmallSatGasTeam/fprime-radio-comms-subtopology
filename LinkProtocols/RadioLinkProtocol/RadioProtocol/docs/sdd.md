@@ -1,56 +1,37 @@
 # Subtopology `RadioProtocol`
 
-This is the subtopology that will describe the Radio framer and deframer
+`RadioProtocol` is an F' subtopology that connects the radio link-protocol components
+(`RadioFramer`, `RadioDeframer`, `RadioFrameDetector`) to the standard F' communication
+services and exposes a single hardware-driver attachment point (`comStub`).
 
-> Utilizes the [F Prime Subtopology autocoder](https://github.com/mosa11aei/fprime-subtopology-tool).
+## Instances
 
-## Related Diagrams
-Add any related diagrams here
-
-## Requirements
-Add requirements in the chart below
-| Name | Description | Validation |
+| Instance | Component | Role |
 |---|---|---|
-|---|---|---|
+| `comQueue` | `Svc.ComQueue` | Queues outgoing events/telemetry/file/downlink packets |
+| `RadioFramer` | `RadioLinkProtocol.RadioFramer` | Frames outgoing packets (stubbed) |
+| `RadioDeframer` | `RadioLinkProtocol.RadioDeframer` | Deframes incoming frames (stubbed) |
+| `FrameAccumulator` | `Svc.FrameAccumulator` | Accumulates byte-stream input into frames using `RadioFrameDetector` |
+| `fprimeRouter` | `Svc.FprimeRouter` | Routes deframed F' packets to command/telemetry/file subsystems |
+| `commsBufferManager` | `Svc.BufferManager` | Supplies buffers for the stack |
+| `comStub` | `Svc.ComStub` | Attachment point for the hardware byte-stream driver |
 
-## Instantiation
+## Data Paths
 
-```
-# TODO: EDIT THIS
+- **Downlink**: `comQueue → RadioFramer → comStub → driver`
+- **Uplink**: `driver → comStub → FrameAccumulator → RadioDeframer → fprimeRouter`
 
-topology Inst {}
-@<! is topology RadioProtocol base id 0xAAAA with {
-@<! # fill in as appropriate    
-@<! }
-```
+## Integration
 
-## Redefine-able Instances
-| Instance name | Component |
-|---|---|
-|---|---|
+Import with `import RadioProtocol.Subtopology`, connect a hardware driver to `comStub`, and
+connect your command dispatcher / telemetry / file downlink to `fprimeRouter` and `comQueue`.
+See [`../../../../docs/USAGE_GUIDE.md`](../../../../docs/USAGE_GUIDE.md) for the full guide.
 
-## Subtopology Interface
-
-**Input interface instance**: `module.NameOfInputInterface`
-**Output interface instance**: `module.NameOfOutputInterface`
-
-### Input Interface
-
-Going into `RadioProtocol`.
-
-| Input port | Output port pair | Type      |
-| ---------- | ---------------- | --------- |
-| clock      | clock_in         | Svc.Sched |
-
-### Output Interface
-
-Going out of `RadioProtocol`.
-
-| Output port | Input port pair  | Type      |
-| ----------- | ---------------- | --------- |
-| clock_out   | clock            | Svc.Sched |
+Configuration constants (queue sizes, stack sizes, priorities, buffer bins) live in
+`RadioProtocolConfig/RadioProtocolConfig.fpp`.
 
 ## Change Log
+
 | Date | Description |
 |---|---|
-|---| Initial Draft |
+| 2026-06-05 | Rewritten to describe the actual subtopology (replaced generator boilerplate) |
