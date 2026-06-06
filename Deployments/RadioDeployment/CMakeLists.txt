@@ -1,7 +1,7 @@
 #####
-# 'TransceiverDeployment2' Deployment:
+# 'RadioDeployment' Deployment:
 #
-# This registers the 'TransceiverDeployment2' deployment to the build system. 
+# This registers the 'RadioDeployment' deployment to the build system. 
 # Custom components that have not been added at the project-level should be added to 
 # the list below.
 #

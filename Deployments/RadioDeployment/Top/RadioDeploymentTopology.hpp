@@ -1,11 +1,11 @@
 // ======================================================================
-// \title  TransceiverDeployment2Topology.hpp
+// \title  RadioDeploymentTopology.hpp
 // \brief header file containing the topology instantiation definitions
 //
 // ======================================================================
-#ifndef TRANSCEIVERTCPDEPLOYMENT_TRANSCEIVERTCPDEPLOYMENTTOPOLOGY_HPP
-#define TRANSCEIVERTCPDEPLOYMENT_TRANSCEIVERTCPDEPLOYMENTTOPOLOGY_HPP
-// Included for access to TransceiverDeployment2::TopologyState and TransceiverDeployment2::ConfigObjects::pingEntries. These definitions are required by the
+#ifndef RADIODEPLOYMENT_RADIODEPLOYMENTTOPOLOGY_HPP
+#define RADIODEPLOYMENT_RADIODEPLOYMENTTOPOLOGY_HPP
+// Included for access to RadioDeployment::TopologyState and RadioDeployment::ConfigObjects::pingEntries. These definitions are required by the
 // autocoder, but are also used in this hand-coded topology.
 #include <Deployments/RadioDeployment/Top/RadioDeploymentTopologyDefs.hpp>
 
@@ -32,7 +32,7 @@ namespace RadioDeployment {
  * custom tasks often start radio communication it is convenient to start them last.
  *
  * The state argument carries command line inputs used to setup the topology. For an explanation of the required type
- * TransceiverDeployment2::TopologyState see: TransceiverDeployment2TopologyDefs.hpp.
+ * RadioDeployment::TopologyState see: RadioDeploymentTopologyDefs.hpp.
  *
  * \param state: object shuttling CLI arguments (e.g. hostname/port, or UART baudrate) needed to construct the topology
  */
@@ -53,7 +53,7 @@ void setupTopology(const TopologyState& state);
  * Step 1, 2, 3, and 4 must occur in-order as the tasks must be stopped before being joined. These tasks must be stopped
  * and joined before any active resources may be deallocated.
  *
- * For an explanation of the required type TransceiverDeployment2::TopologyState see: TransceiverDeployment2TopologyDefs.hpp.
+ * For an explanation of the required type RadioDeployment::TopologyState see: RadioDeploymentTopologyDefs.hpp.
  *
  * \param state: state object provided to setupTopology
  */
@@ -80,5 +80,5 @@ void startRateGroups(const Fw::TimeInterval& interval = Fw::TimeInterval(1,0));
  */
 void stopRateGroups();
 
-} // namespace TransceiverDeployment2
+} // namespace RadioDeployment
 #endif

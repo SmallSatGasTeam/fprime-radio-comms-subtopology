@@ -1,10 +1,10 @@
 // ======================================================================
-// \title  TransceiverDeployment2TopologyDefs.hpp
+// \title  RadioDeploymentTopologyDefs.hpp
 // \brief required header file containing the required definitions for the topology autocoder
 //
 // ======================================================================
-#ifndef TRANSCEIVERTCPDEPLOYMENT_TRANSCEIVERTCPDEPLOYMENTTOPOLOGYDEFS_HPP
-#define TRANSCEIVERTCPDEPLOYMENT_TRANSCEIVERTCPDEPLOYMENTTOPOLOGYDEFS_HPP
+#ifndef RADIODEPLOYMENT_RADIODEPLOYMENTTOPOLOGYDEFS_HPP
+#define RADIODEPLOYMENT_RADIODEPLOYMENTTOPOLOGYDEFS_HPP
 
 // Subtopology PingEntries includes
 #include "Svc/Subtopologies/CdhCore/PingEntries.hpp"
@@ -65,7 +65,7 @@ namespace RadioDeployment {
 /**
  * \brief required type definition to carry state
  *
- * The topology autocoder requires an object that carries state with the name `TransceiverDeployment2::TopologyState`. Only the type
+ * The topology autocoder requires an object that carries state with the name `RadioDeployment::TopologyState`. Only the type
  * definition is required by the autocoder and the contents of this object are otherwise opaque to the autocoder. The
  * contents are entirely up to the definition of the project. This deployment uses subtopologies.
  */
@@ -82,5 +82,5 @@ struct TopologyState {
 };
 
 namespace PingEntries = ::PingEntries;
-}  // namespace TransceiverDeployment2
+}  // namespace RadioDeployment
 #endif

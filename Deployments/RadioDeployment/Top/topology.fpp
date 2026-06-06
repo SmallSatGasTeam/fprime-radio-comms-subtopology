@@ -57,7 +57,7 @@ module RadioDeployment {
   # Telemetry packets (only used when TlmPacketizer is used)
   # ----------------------------------------------------------------------
 
-    # include "TransceiverDeployment2Packets.fppi"
+    # include "RadioDeploymentPackets.fppi"
 
   # ----------------------------------------------------------------------
   # Direct graph specifiers
