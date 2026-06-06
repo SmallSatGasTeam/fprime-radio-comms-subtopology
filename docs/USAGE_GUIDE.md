@@ -1,11 +1,11 @@
 # Integration and Usage Guide
 
-This guide explains how to take the open-source F' structural scaffolding for the radio communication stack and integrate it into your own F' (F Prime) flight software project, including how to inject your radio's parameters and framing logic.
+This guide explains how to take the open-source F' structural scaffolding for the radio communication stack and integrate it into your own F' (F Prime) flight software project, including how to implement its framing logic.
 
 ## Prerequisites
 
 - A working F' project (version > v4).
-- Datasheets / documentation for your radio so you can fill in the framing parameters and I2C commands.
+- Datasheets / documentation for your radio so you can implement the framing logic and I2C commands.
 
 ---
 
@@ -14,48 +14,37 @@ This guide explains how to take the open-source F' structural scaffolding for th
 First, add this repository to your F' project (e.g., as a git submodule inside a `lib/` or `Components/` directory).
 
 ```bash
-git submodule add https://github.com/Xtilloo/fprime-radio-uhf-comms.git lib/fprime-radio-uhf-comms
+git submodule add https://github.com/SmallSatGasTeam/fprime-radio-comms-subtopology.git lib/fprime-radio-comms-subtopology
 ```
 
 In your project's top-level `CMakeLists.txt` or `project.cmake`, include the directory so F' knows to build it:
 
 ```cmake
-add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/fprime-radio-uhf-comms/")
+add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib/fprime-radio-comms-subtopology/")
 ```
 
 ---
 
-## Step 2: Inject Configuration
-
-This project abstracts radio-specific values (sync words, polynomials, callsigns, I2C command strings, etc.) into a single configuration object.
-
-1. Locate the template at `keys_template/TransceiverConfig.hpp.example`.
-2. Copy it into a **private, non-public** directory within your own project (e.g., `Config/TransceiverConfig.hpp`).
-3. Fill in every field using the values from your radio's datasheet.
-4. Ensure your project's CMake configuration includes the directory containing your `TransceiverConfig.hpp` in its include path so the components can find it.
-
----
-
-## Step 3: Implement the Stub Bodies
+## Step 2: Implement the Stub Bodies
 
 The framing logic in this scaffolding is intentionally stubbed. Implement each stub against your radio's documentation.
 
 ### 1. `RadioFramer.cpp`
-Located at `LinkProtocols/RadioLinkProtocol/RadioFramer/RadioFramer.cpp`. Replace the pass-through `memcpy` in `frameData()` with your framing logic.
+Located at `LinkProtocols/RadioLinkProtocol/RadioFramer/RadioFramer.cpp`. Replace the pass-through in `frameData()` with your framing logic (preamble, sync word, length field, CRC), writing each field into the allocated buffer through its serializer.
 
 ### 2. `RadioDeframer.cpp`
-Located at `LinkProtocols/RadioLinkProtocol/RadioDeframer/RadioDeframer.cpp`. Implement `dataIn_handler` and `validateFrame`. Update the `FrameContext` with the stripped offset so buffer pointers can be restored on the return path.
+Located at `LinkProtocols/RadioLinkProtocol/RadioDeframer/RadioDeframer.cpp`. Implement `dataIn_handler` to strip your link headers and update the `FrameContext` with the stripped offset so buffer pointers can be restored on the return path.
 
 ### 3. `RadioFrameDetector.cpp`
 Located at `LinkProtocols/RadioLinkProtocol/RadioFrameDetector/RadioFrameDetector.cpp`. Replace the pass-through `detect()` with your sync-word / length-field scanning logic.
 
+> The `Components/` management components (`TransceiverCommsManager`, `TransceiverConfigurationManager`) are likewise stubbed — implement their handlers if you need beacon management or I2C radio configuration. Radio-specific values (sync words, polynomials, callsigns, I2C command bytes) are supplied by your implementation; this repository does not ship them.
+
 ---
 
-## Step 4: Import the Subtopology
+## Step 3: Import the Subtopology
 
-Once the logic is implemented, you can easily wire the entire communication stack into your deployment using FPP.
-
-In your deployment's `topology.fpp` file, import the RadioProtocol subtopology:
+Once the logic is implemented, wire the entire communication stack into your deployment using FPP. In your deployment's `topology.fpp` file, import the RadioProtocol subtopology:
 
 ```fpp
 import RadioProtocol.Subtopology
@@ -74,20 +63,20 @@ connections RadioStack {
     # Driver buffer allocations
     LinuxUartDriver.allocate   -> RadioProtocol.commsBufferManager.bufferGetCallee
     LinuxUartDriver.deallocate -> RadioProtocol.commsBufferManager.bufferSendIn
-    
+
     # Receive path (Uplink: Antenna -> Driver -> Stub -> Deframer)
     LinuxUartDriver.recv                      -> RadioProtocol.comStub.drvReceiveIn
-    RadioProtocol.comStub.drvReceiveReturnOut -> LinuxUartDriver.recvReturnIn  
-    
+    RadioProtocol.comStub.drvReceiveReturnOut -> LinuxUartDriver.recvReturnIn
+
     # Transmit path (Downlink: Framer -> Stub -> Driver -> Antenna)
-    RadioProtocol.comStub.drvSendOut      -> LinuxUartDriver.send            
-    LinuxUartDriver.ready                     -> RadioProtocol.comStub.drvConnected 
+    RadioProtocol.comStub.drvSendOut      -> LinuxUartDriver.send
+    LinuxUartDriver.ready                 -> RadioProtocol.comStub.drvConnected
 }
 ```
 
 ---
 
-## Step 5: Connect F' Services
+## Step 4: Connect F' Services
 
 Finally, connect your deployment's command dispatcher, telemetry sender, and file downlink to the subtopology's router and queue.
 
@@ -102,18 +91,3 @@ connections RadioProtocol_CdhCore {
     CdhCore.cmdDisp.seqCmdStatus -> RadioProtocol.fprimeRouter.cmdResponseIn
 }
 ```
-
-## Step 6: Define `TRANSCEIVER_CONFIG`
-
-In your deployment's C++ topology setup code (e.g., `Topology.cpp`), define the global configuration object that the subtopology expects:
-
-```cpp
-#include "Config/TransceiverConfig.hpp"
-
-namespace YourDeployment {
-    // This definition is required by the RadioProtocol subtopology
-    TransceiverConfig::Config TRANSCEIVER_CONFIG;
-}
-```
-
-(Ensure you initialize or load values into this object before `setupTopology()` is called if they are dynamic, though statically compiling them into the struct is standard).

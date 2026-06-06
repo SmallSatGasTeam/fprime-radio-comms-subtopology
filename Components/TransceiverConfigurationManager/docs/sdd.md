@@ -1,108 +1,68 @@
 # Component::TransceiverConfigurationManager
 
-Active component responsible for I2C configuration of the radio transceiver. Configures radio parameters (e.g., frequency, callsigns) via I2C.
+> **Status: structural stub.** This component defines the F' interface for configuring a
+> radio transceiver over I2C, but the configuration logic is intentionally **not
+> implemented**. Only the health-ping passthrough does real work; the `configureSettings`
+> command and all I2C helpers are stubs. There are no unit tests in this repository.
 
-## Usage Examples
+Active component intended to configure radio parameters (frequency, callsigns, power mode,
+etc.) over I2C. As shipped, it is a structural reference only.
 
-### Typical Usage
-1. On startup or when radio reconfiguration is needed, invoke the `configureSettings` command
-2. The component reads configuration parameters and sends I2C commands to the transceiver
-3. The component remains idle until reconfiguration is requested
-4. Health pings are accepted and responded to for system health monitoring
+## Interface
 
-## Port Descriptions
+### Ports
 
 | Name | Type | Direction | Purpose |
 |---|---|---|---|
-| `i2cRead` | `Drv.I2c` | output | I2C read transactions to transceiver |
-| `i2cWrite` | `Drv.I2c` | output | I2C write transactions to transceiver |
-| `i2cReadWrite` | `Drv.I2cWriteRead` | output | I2C write-then-read transactions |
-| `allocate` | `Fw.BufferGet` | output | Buffer allocation for I2C transactions |
-| `deallocate` | `Fw.BufferSend` | output | Buffer deallocation |
-| `pingIn` | `Svc.Ping` | async input | Health ping input |
-| `pingOut` | `Svc.Ping` | output | Health ping response |
-| `timeCaller` | time get | output | Request current time |
-| `cmdRegOut` | command reg | output | Command registration |
-| `cmdIn` | command recv | input | Receive commands |
-| `cmdResponseOut` | command resp | output | Command responses |
-| `logTextOut` | text event | output | Text event logging |
-| `logOut` | event | output | Event logging |
-| `tlmOut` | telemetry | output | Telemetry downlink |
-| `prmGetOut` | param get | output | Parameter retrieval |
-| `prmSetOut` | param set | output | Parameter setting |
+| `i2cWriteRead` | `Drv.I2cWriteRead` | output | I2C write-then-read transactions |
+| `i2cRead` | `Drv.I2c` | output | I2C read |
+| `i2cWrite` | `Drv.I2c` | output | I2C write |
+| `allocate` / `deallocate` | `Fw.BufferGet` / `Fw.BufferSend` | output | Buffer allocation / deallocation |
+| `pingIn` / `pingOut` | `Svc.Ping` | async input / output | Health ping |
+| standard ports | — | — | time, command reg/recv/resp, text event, event, telemetry, param |
 
-## Component States
-
-The component is passive and stateless with respect to mission logic.
-
-| Name | Description |
-|---|---|
-| Idle | Waiting for reconfiguration requests |
-| Configuring | Executing I2C configuration sequence (transient) |
-
-## Commands
+### Commands
 
 | Command | Arguments | Description |
 |---|---|---|
-| `configureSettings` | none | Execute full radio configuration sequence |
+| `configureSettings` | none | (Stub) intended to run the full I2C radio-configuration sequence |
 
-## Functions
-
-| Name | Description |
-|---|---|
-| `configureSettings_cmdHandler()` | Initiates the radio configuration sequence |
-| `pingIn_handler()` | Health ping input, forwards to pingOut |
-| `sendI2cCmd()` | Allocates buffer, serializes I2C command, sends via i2cRead/i2cWrite/i2cReadWrite |
-| `checkI2cStatus()` | Validates I2C status, logs appropriate event |
-| `sendConfigCommand()` | Sends a single configuration command via I2C |
-| `parseBuffer()` | Parses I2C response for success/failure (checks for expected success prefix) |
-
-## Events
+### Events (declared in FPP; not emitted by the stub)
 
 | Name | Severity | Description |
 |---|---|---|
 | `UHFSuccess` | ACTIVITY_HI | I2C transaction succeeded |
-| `UHFAddressFailure` | WARNING_HI | Invalid I2C address for transceiver |
-| `UHFWriteError` | WARNING_HI | I2C write operation failed |
-| `UHFReadError` | WARNING_HI | I2C read operation failed |
-| `UHFOpenError` | WARNING_HI | Failed to open I2C device |
-| `UHFOtherError` | WARNING_HI | Other unspecified I2C error |
-| `MemoryAllocationFailed` | WARNING_LO | Failed to allocate buffer for I2C transaction |
+| `UHFAddressFailure` / `UHFWriteError` / `UHFReadError` / `UHFOpenError` / `UHFOtherError` | WARNING_HI | I2C failure conditions |
+| `MemoryAllocationFailed` | WARNING_LO | Buffer allocation failure |
 | `debuggingEvent(string)` | ACTIVITY_HI | Generic debug output |
 
-## Telemetry
+### Telemetry (declared in FPP; not updated by the stub)
 
 | Name | Type | Description |
 |---|---|---|
-| `temperature` | U8 | Transceiver internal temperature in degrees Celsius |
-| `uptime` | U8 | Time elapsed since transceiver last powered on |
-| `lowPowerMode` | bool | Whether transceiver is in low power mode |
+| `temperature` | U8 | Transceiver internal temperature |
+| `uptime` | U8 | Time since transceiver power-on |
+| `lowPowerMode` | bool | Low-power mode flag |
 
-## Internal Constants
+## Implemented behavior (as shipped)
 
-| Name | Value | Description |
-|---|---|---|
-| `ADDRESS` | 0xXX | I2C address of transceiver (injected via config) |
-| `WRITE_*` | - | Radio-specific write command bytes |
-| `READ_*` | - | Radio-specific read command bytes |
+| Handler | Behavior |
+|---|---|
+| `pingIn_handler` | Echoes the ping to `pingOut` |
+| `configureSettings_cmdHandler` | Responds `OK`; no I2C activity |
+| `configureSettings` / `sendConfigCommand` / `sendI2cCmd` / `checkI2cStatus` / `parseBuffer` | No-op / empty-return stubs |
 
-## Unit Tests
+## Integration notes
 
-| Name | Description | Status |
-|---|---|---|
-| `testPingPassthrough` | Verify pingIn forwarded correctly to pingOut | ✓ PASS |
-
-## Requirements
-
-| Requirement | Description | Validation |
-|---|---|---|
-| CFG-1 | Configure transceiver frequency via I2C | Covered by `configureSettings` command implementation |
-| CFG-2 | Configure transceiver callsigns via I2C | Covered by `configureSettings` command implementation |
-| CFG-4 | Report I2C transaction status via events | Covered by event logging in `checkI2cStatus` |
-| CFG-5 | Health ping support | Covered by `pingIn_handler` test |
+To make this functional: implement the I2C sequence in `configureSettings`, build
+transactions in `sendI2cCmd`, validate status in `checkI2cStatus`, and emit the declared
+events/telemetry. Radio-specific command bytes and the I2C address must be supplied by the
+operator (e.g. as component parameters or constants) — this repo no longer ships a
+configuration-injection layer.
 
 ## Change Log
 
 | Date | Description |
 |---|---|
 | 2026-03-29 | Initial component creation and documentation |
+| 2026-06-05 | Documented as structural stub; removed unimplemented behavior, config-injection, and unit-test claims |

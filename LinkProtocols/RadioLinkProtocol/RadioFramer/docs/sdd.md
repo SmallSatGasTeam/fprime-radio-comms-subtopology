@@ -2,7 +2,7 @@
 
 Passive component that wraps an outgoing payload into a frame for the configured radio and forwards it to the byte-stream driver.
 
-The framing logic itself is intentionally a stub in this open-source scaffolding. Operators supply their licensed framing implementation through `keys_template/TransceiverConfig.hpp` and the helper in `RadioFramer.cpp`.
+The framing logic itself is intentionally a stub in this open-source scaffolding. Operators supply their framing implementation in the `frameData()` helper in `RadioFramer.cpp`, against their radio's datasheet. As shipped, the stub allocates an output buffer and copies the payload through unchanged.
 
 ## Port Descriptions
 
@@ -27,5 +27,5 @@ The component follows a zero-copy ownership model:
 
 | Name | Description | Validation |
 | --- | --- | --- |
-| Buffer Ownership | Input buffers must be returned to the sender immediately; output buffers must be deallocated when returned by the driver. | Unit test |
-| Allocation Guard | If the allocated buffer is smaller than required, it must be deallocated and the frame must be dropped without a crash. | Unit test |
+| Buffer Ownership | Input buffers must be returned to the sender immediately; output buffers must be deallocated when returned by the driver. | Inspection |
+| Allocation Guard | If the allocated buffer is smaller than required, it must be deallocated and the frame must be dropped without a crash. | Inspection |

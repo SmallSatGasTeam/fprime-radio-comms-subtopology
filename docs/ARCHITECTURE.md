@@ -2,54 +2,49 @@
 
 ## System Overview
 
-This repository provides an F' (F Prime) structural scaffolding for a generic radio communication stack. It shows how to wire custom framing and deframing components into an F' flight software system alongside standard services like `ComQueue`, `FprimeRouter`, and `BufferManager`.
+This repository provides an F' (F Prime) structural scaffolding for a generic radio communication stack. It shows how to wire custom framing and deframing components into an F' flight software system alongside standard services like `ComQueue`, `FrameAccumulator`, `FprimeRouter`, `BufferManager`, and `ComStub`.
 
-The framing logic itself is intentionally a stub. This project is a structural template and integration reference; operators supply the actual algorithm via `keys_template/TransceiverConfig.hpp` and the marked stub bodies.
+The radio-specific behavior is intentionally stubbed. This project is a structural template and integration reference; operators supply the actual framing algorithm, beacon logic, and I2C configuration by implementing the marked stub bodies against their hardware's datasheet.
 
 ## Directory Architecture
 
 ```
-Open_Source_FPrime_Radio_Communications/
+fprime-radio-comms-subtopology/
 ├── Components/
-│   ├── TransceiverCommsManager/        # Manages beacon state and downlink routing
-│   └── TransceiverConfigurationManager/ # Manages transceiver configuration via I2C
+│   ├── TransceiverCommsManager/         # Downlink/beacon gateway interface (stubbed)
+│   └── TransceiverConfigurationManager/ # I2C transceiver configuration interface (stubbed)
 │
 ├── LinkProtocols/
-│   └── RadioLinkProtocol/          # The F' framing/deframing implementation
-│       ├── RadioFramer/            # Wraps packets in radio/link headers (Stubbed)
-│       ├── RadioDeframer/          # Strips headers from incoming frames (Stubbed)
-│       ├── RadioFrameDetector/     # Identifies frame boundaries in stream (Stubbed)
-│       └── RadioProtocol/          # FPP Subtopology connecting the stack
+│   └── RadioLinkProtocol/          # The F' framing/deframing components
+│       ├── RadioFramer/            # Wraps packets in radio/link frames (stubbed)
+│       ├── RadioDeframer/          # Strips headers from incoming frames (stubbed)
+│       ├── RadioFrameDetector/     # Finds frame boundaries in a byte stream (stubbed)
+│       └── RadioProtocol/          # FPP subtopology connecting the stack
 │
-├── Deployments/
-│   └── RadioDeployment/       # Example deployment using the comms stack
-│
-└── keys_template/                      # IP Abstraction Layer
-    ├── README_IP_PROTECTION.md         # Instructions for filling in radio parameters
-    └── TransceiverConfig.hpp.example   # Template for radio parameters and keys
+└── Deployments/
+    └── RadioDeployment/            # Example deployment using the comms stack
 ```
 
 ## Subsystem Breakdown
 
 ### `LinkProtocols/RadioLinkProtocol`
-This is the heart of the communication stack implementation in F'.
 
-- **RadioFramer**: An F' component that receives `Fw::Buffer` packets, allocates a new buffer for the framed data, and forwards it to the communication driver.
-- **RadioDeframer**: An F' component that receives raw buffers, identifies the packet type, and routes it to the `FprimeRouter`.
-- **RadioFrameDetector**: An implementation of the `Svc::FrameDetector` interface, used by the `Svc::FrameAccumulator` to find frames in a continuous byte stream.
-- **Subtopology**: An FPP subtopology that encapsulates the instances and connections of the framing stack, making it easy to drop into any F' deployment.
+The framing stack.
+
+- **RadioFramer**: F' component on the downlink path. Receives `Fw::Buffer` packets, allocates a buffer for the framed data, and forwards it toward the communication driver. The framing body is a stubbed pass-through.
+- **RadioDeframer**: F' component on the uplink path. Receives accumulated frames and routes them to the `FprimeRouter`. The deframing body is a stubbed pass-through.
+- **RadioFrameDetector**: An implementation of the `Svc::FrameDetector` interface, used by `Svc::FrameAccumulator` to find frames in a continuous byte stream. The detection body is a stub that treats any available data as a single frame.
+- **RadioProtocol**: An FPP subtopology that encapsulates the instances and connections of the framing stack, making it easy to drop into any F' deployment.
 
 ### `Components/`
-Higher-level management components.
 
-- **TransceiverCommsManager**: Handles the high-level logic of when to transmit beacons vs. telemetry, and manages the state machine for the transceiver.
-- **TransceiverConfigurationManager**: Interfaces with the hardware driver to send configuration commands for setting radio frequency, power modes, etc.
+Higher-level management component interfaces. Each defines its F' ports, commands, events, and telemetry, but ships with stubbed behavior (see each component's `docs/sdd.md`).
 
-### `keys_template/`
-Provides the mechanism for users to supply their radio's parameters without hardcoding them into the open-source scaffolding. Users populate a `TransceiverConfig.hpp` file based on the provided example.
+- **TransceiverCommsManager**: Intended downlink gateway and beacon controller — all outgoing data would route through it, and it would manage periodic beacon transmission.
+- **TransceiverConfigurationManager**: Intended I2C configuration of radio parameters such as frequency, callsigns, and power mode.
 
 ## Dependencies
 
-- **F' (F Prime)**: The underlying flight software framework. Greater than V4.
+- **F' (F Prime)**: The underlying flight software framework. Greater than v4.
 - **C++11/17**: For component implementations.
 - **FPP**: For structural modeling and connection definitions.

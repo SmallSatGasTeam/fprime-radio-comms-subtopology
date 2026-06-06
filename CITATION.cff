@@ -4,8 +4,8 @@ title: "Radio Communication Subtopology for F Prime"
 abstract: >-
   An open-source F Prime (F') structural scaffolding that wires a custom radio
   link protocol — framer, deframer, and frame detector — into the standard F'
-  communications services, with beacon/I2C transceiver management components and
-  a configuration injection layer.
+  communications services, with beacon and I2C transceiver management component
+  interfaces.
 type: software
 authors:
   - given-names: Boston

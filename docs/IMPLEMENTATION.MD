@@ -1,21 +1,26 @@
 # Implementation Strategy: Structural Scaffolding
 
-This project ships only the F' structural scaffolding for a radio communication stack — no radio-specific framing algorithm, polynomial, sync word, or vendor-specific command set is included. Operators provide those values through a configuration injection layer.
+This project ships the F' structural scaffolding for a radio communication stack — the
+component interfaces, the subtopology wiring, and an example deployment. The
+radio-specific behavior (framing algorithm, CRC, beacon logic, I2C configuration) is
+intentionally left as stubs for the integrating team to implement against their hardware's datasheet.
 
-### Open-source scaffolding
+## What is provided
 
-- **Component definitions (.fpp)**: ports, commands, events, and telemetry for the communication stack.
-- **Subtopology connections (.fpp)**: how framing components connect to each other and to standard F' services (`ComQueue`, `FprimeRouter`, etc.).
-- **Management logic (.cpp)**: non-radio-specific management logic — beacon state machine, I2C transaction sequencing.
+- **Component definitions (.fpp)**: ports, commands, events, and telemetry for the
+  link-protocol and management components.
+- **Subtopology connections (.fpp)**: how the framing components connect to each other and
+  to standard F' services (`ComQueue`, `FrameAccumulator`, `FprimeRouter`, `BufferManager`,
+  `ComStub`).
 - **Deployment example**: a full F' deployment showing the wiring.
 
-### Stubbed bodies
+## What is stubbed
 
-The framing-related bodies are intentional pass-throughs:
-- Framing / deframing (preamble, sync word, length field handling).
-- Frame check / CRC computation.
+The behavior-bearing bodies are intentional no-ops / pass-throughs:
 
-### Injection via `keys_template/`
+- Framing / deframing / frame detection (`RadioFramer`, `RadioDeframer`,
+  `RadioFrameDetector`) — preamble, sync word, length field, and CRC handling.
+- Beacon management and downlink routing (`TransceiverCommsManager`).
+- I2C transceiver configuration (`TransceiverConfigurationManager`).
 
-1. **Header configuration**: copy `keys_template/TransceiverConfig.hpp.example` to `keys_template/TransceiverConfig.hpp` (gitignored) and fill in the values from your radio's datasheet.
-2. **Stub bodies**: implement the marked stubs in the `.cpp` files using your radio's documentation.
+Operators implement these handlers against their radio's documentation. The project ships no radio-specific values (polynomials, sync words, callsigns, vendor command sets) and no unit tests.
